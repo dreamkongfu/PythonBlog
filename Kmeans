@@ -1,0 +1,15 @@
+https://scikit-learn.org/stable/modules/clustering.html#clustering
+Kmeans 用途： 一般目的，聚集数的大小 平均，数据集服从 flat geometry . if  curvature is everywhere 0 , it's flat. like {t,t}
+平面，点，线
+DBSCAN 用途： 数据为non flat geometry. 群大小不同, 如 GPS 测地球表面数据，Map ，声音识别，图像识别，神经中的电子信号识别，信息geometry
+OPTICS 用途： 数据为 non flat geometry.可变的群密度，
+3. a 
+4.ID3算法， 算信息熵增的大小， 熵= -∑pi*log(pi) 条件熵= p(样本条件A=‘c’的概率)*H(条件A='c')+p(类别的概率)*H(样本条件A=‘b’）
+条件A的熵增 = 熵- 条件熵， 取熵增的大小排序，熵增越大，说明该条件影响力越大
+5.Kmeans 算法
+#随机选择中心点
+randidx = np.random.permutation(X.shape[0])
+centroids = X[randidx[:K],:]
+def Kmeans():
+   idx = findClosestCentroids(X,centroids)
+   centorids = computeCentroidsMeans(X,idx,K)
