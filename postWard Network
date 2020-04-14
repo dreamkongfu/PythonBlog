@@ -1,0 +1,15 @@
+
+回归 mse = 1/(2*N)*∑(y -y')^2
+分类 ce = -log(Sk)
+y = w*Hn+b
+Hn = z(fn) // z can be sigmoid, relu, tanH 
+fn= w*Hn-1+b
+
+1.线性梯度
+回归 dloss/dy =  dMse/dy = 1/N*∑(yi-y'i)
+分类 dLoss/dy = dCe / dy= S-S'  S' 为标注
+dLoss/dw = dLoss/dy *dy/dw = dLoss/dy * Hn
+dLoss/db = dLoss/dy
+dLoss/dfn = dLoss/dHn * dHn/dfn 
+
+
