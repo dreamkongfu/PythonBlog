@@ -1,6 +1,6 @@
 
 回归 mse = 1/(2*N)*∑(y -y')^2
-分类 ce = -log(Sk)
+分类 ce = -log(Sk)     sk = e^k / ∑e^i     ce = p(x)log(p(x)/h(x)) 将p(x) 为 标记值的分布
 y = w*Hn+b
 Hn = z(fn) // z can be sigmoid, relu, tanH 
 fn= w*Hn-1+b
@@ -9,9 +9,14 @@ wn = wn-1 -dw
 回归 dloss/dy =  dMse/dy = 1/N*∑(yi-y'i)
 分类 dLoss/dy = dCe / dy= S-S'  S' 为标注
 dLoss/dw = dLoss/dy *dy/dw = dLoss/dy * Hn
-dLoss/db = dLoss/dy
+dLoss/db = dLoss/dy 的 行的和 
 dLoss/dfn = dLoss/dHn * dHn/dfn 
 2.后向传播是前向传播的多少倍
+3.激活函数
+sigmoid ： z = 1/（1+e^(-x))    求导： z(1-z)
+tanh: z = (e^(-x)-e^(x)) /(e^(-x)+e^(x)) 求导: 1-z^2
+relu:  x   x > 0   求导： 1  x>0  
+       0    x <0;
 
 
 
