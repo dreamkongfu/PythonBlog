@@ -1,0 +1,48 @@
+
+1.逻辑回归 是一个分类问题，输出是一个概率分布
+
+概率： p(y=1｜x) = 1/(1+e^(-x)) p(y=0|x) = 1/(1+e^(x))
+最大似然估计： ∏p(yi,xi) = ∏p(y=1|xi)^(yi)*p(y=0|x)^(1-yi)
+导数。 lg(∏p(yi,xi) = ∑yi*log(p(y=1|xi)) + (1-yi)*log(p(y=0|xi) =  ∑yi*(wi,xi)-log(1+e^(wx))
+   df/dw = ∑yixi-xi/(1+e^(-wixi))
+损失函数： cross loss ： 分布相似: p(x)log(p(x)/h(x))
+                       输出值概率： e^xk /∑e^xi 
+                       soft max 
+                       
+                       
+ 2.SVM]
+ 支持直线 为 w/c x + b/c = 1,w/c x + b/c = -1
+两条支持直线的 最大距离   d = 2/||w||
+条件 ：min f(x) = 1/2*w^2
+     gi(x)= y(wx+b)-1>=0   1-(wx+b)*y <=0
+有约束的最优化解：   df(x) = ∑ådgi(x)
+                  lambda*g(xi) = 0   
+                  
+ 拉格朗日对偶：
+ minf(x)
+ ck(x) <=0
+ hk(x) = 0
+ L（x,alpha,beta) = f(x)+alpha*∑ck(x) + beta*∑hk(x)
+ Max minL(x,alpha,beta) = min max L(x,alpha,beta)  当L为凸函数
+ 
+ SMO算法
+ L(x,alpha) = 1/2*w^2 + alpha*∑1-(wxi+b)yi
+ dL/dw = w -alpha*∑xiyi
+ dL/db = -alpha*∑yi = 0
+ KKT : alpha(1-(wx+b)yi) = 0
+ 
+ 椭圆区分： 空间变换，非线性 变为线性
+ 多项式： f(x,z) = (x*z+1)^p 
+ 高斯： f(x,z) = e^(（x-z)^2/(2*ò^2))
+ y = ∑alpha*yi*<xi,x> = ∑alpha*yi*f(xi,x)
+ 
+ 3.决策树
+ 算信息增益，熵增 计算相关性
+ 
+ 熵： -∑p(yi)*log(p(yi))
+ 条件熵    ∑p(特征a= i）*熵（特征a=i）
+ 熵增= 熵-条件熵
+ 
+ 
+ 
+ 
