@@ -1,0 +1,55 @@
+CNN：网格化数据，可变的大小的图像
+RNN：序列数据，语音，翻译，NLP，上下文关系，权值共享处理序列化，可变长度的序列数据
+当前的输出 依赖于 当前的输入和之前的输入
+1.简单循环网络： 表现方式，
+ 反向延时传播
+2.循环网络常用结构：双向循环神经网络
+               深度循环网络
+                递归神经网络
+
+3.长期依赖问题： 梯度消失， 梯度爆炸
+
+4.门控制循环网络， LSTM GRU
+5.长期依赖优化
+
+1.简单循环网络： 
+x1,x2,x3....xt为语音输入特征，输出 o1,o2,o3,o4,o5=(标记值）
+表现方式，U,V,W,b1,b2 作为权值共享，减少参数，可以处理变长的序列，在每一个层都是相同的。 也有形式 使得 U，V，W，b1,b2 不同
+h1 = U*x1 +b1
+s1 = f(h1)
+O1 = s1*v+b2
+
+h2 = U*x2 +w*S1+b1
+s2 = f(h2)
+O2 = s2*v+b2
+
+ 反向延时传播
+ 
+ dJ/dOi= dJi/dOi
+ dJ/ds = dJ/dO1 * dO/ds1 + dJ/dh2*W= dJ/dO1 *V+dJ/dh1*W    // ds1 参与了两个式子运算
+
+ dJ/dh = dJ/ds1*ds1/dh1
+ dJ/dx = dJ/dh1*dh1/dx1
+ 
+  dJ/dv = ∑dJ/doi*si
+  dJ/dU = ∑dJ/doi*xi
+  dJ/dw = ∑dJ/doi*Si-1
+  因为依赖前一个输入，无法同步算
+ 并行化训练： 多句话一同训练，每句提取 t 个样本，（以最长的序列为准，不够补O）
+  长期依赖，梯度爆炸消失
+  dJ/dst-1 = dJ/dOt-1*V + dJ/dht*Wt,  dJ/dht = dJ/dst*dst/dht
+  dJ/dst-1 = dJ/dht*(dJ/dst)*dst/dht*Wt    等比数列，导致 dst-k = f1(t)f2(t)...fk(t)dJ/dst = z(W^k)dJ/dst
+  方法是 每隔T清除下一个时刻传来的梯度，dJ/dst-1 = dJ/dOt-1*V 无视后面的数 或者 设置一个threshhold,超过这个设置为一个定值
+  
+  双向RNN， x1,x2..xn , 推一遍
+  xn,xn-1...x1 再推一遍， 得到 【O1，O2】
+  
+  DeepRNN，多层
+  
+  
+  
+  
+  
+  
+ 
+ 
