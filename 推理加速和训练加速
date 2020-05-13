@@ -1,0 +1,55 @@
+1.SVD分解
+2.Hidden Node prune
+3.知识蒸馏( teacher student)
+4.参数共享(lstm的参数共享)
+5.神经网络量化
+6.binary Net
+7.基于fft的循环矩阵加速
+1.SVD 分解
+      A = Vt.[lambda1,lambda2...] Un
+      a.先训练 完整的大结构的数据，得到 参数 W
+      b. svd fine tuning 然后对W ,SVD分解 W1，W2  获得初始化参数 ， 训小网络，小学习率训练
+2.Hidden Node prune
+      a.pretrain  大网络， node i = ∑wi  ， 排序，取最大的前60%
+      b hidden Node prune+fine tuning,    小网络，
+3.teacher student
+      a. 训大模型 得到 softmax 的输出，作为小模型的表签
+      b.训小模型 ，用大模型的输出作标注，得到新的softmax的输出  ， 计算 KL距离 D(P|Q) = ∑p(xi)log(p(xi)/Q(xi))
+4.参数共享（lstm的参数共享)
+ot,ft,ut,it  层 的w相同 乘一个scale
+5.神经网络的量化 a.b, a float, b float 耗时 ,左移32 bit, 16bit,8 bit
+[w1*2^32]/2^32 或者 [w1*2^8]/2^8
+利用Intel的sse扩张指令或者arm 的neon进行加速运算，可以同时运算多条乘法
+6。binary Net  
+参数只有1，-1两个参数
+采用位运算加速
+STE， 后向传播： dy/dx = 0 x>1 or x<-1 
+                       1  -1<x<1
+7.fft 的循环矩阵 CNN，运算快
+卷积运算， FFt(c*x) = FFt(c).FFt(x) 傅立叶变换，很快
+c*x = FFt-1[FFt(c)*FFt(x)] 
+
+二、训练加速  
+几十台GPU，集群
+训练加速：数据并行
+推理加速： 串行加速，使用小数据，跑在终端上的，GPU有限，模型变小
+深度学习自适应：公共数据集->新的产品，迁移学习
+对抗神经网络： 有监督和无监督学习联系在一起
+
+1. model Average(模型平均)
+2.SSGD（同步随机梯度下降）
+  Client deltaW -> Server -> W1 = W0-deltaW -> Client
+3.ASGD (异步随机梯度下降)整个模型
+Client1 deltaW -> Server -> W1 = W0-deltaW -> Client1
+Client2 deltaW -> Server -> W2 = W1-deltaW -> Client2
+4.模型并行， 神经网络模型分块
+
+
+
+
+
+
+
+
+
+      
