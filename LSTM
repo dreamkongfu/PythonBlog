@@ -1,0 +1,7 @@
+1 forget() = sigmoid(Wf*[ht-1,x]+bf) 遗忘门
+2. C() = relu(Wc*[ht-1,x]+bc)        Cell
+3  i() = simoid                                   输入门
+4. ot = sigmoid(Wo*[ht-1,x]+bo)       输出门
+4 ht = ot*tanh(Ct)
+
+高度非线性， 梯度非常大或者小，梯度截断，步长受到限制
