@@ -1,0 +1,10 @@
+A = [col1,col2,col3,col4,col5]
+B = [0,0,0,1,0]
+T = [0,0,0,col4,0]
+从 A 中挑选第5列数据，  np.dot(A,B.T)
+判断 T 是A中的第？列   
+从 A 中挑选 指定 列数据 A[np.array([i,j]),np.array([k,f])] 
+从 A 中挑选第5行数据： A[np.array([5])]      
+mask
+b = A > 5
+A[b]
