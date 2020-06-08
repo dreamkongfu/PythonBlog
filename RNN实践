@@ -1,0 +1,38 @@
+optimize:
+    1.RNN_forward； return loss, cache(values of layers),da
+    2.RNN_backward: input da, cache, xt,return gradients
+    3.clip
+    4.update_gradients:input: learning rate,gradients, return gradients
+    return: loss,da_prev
+model:
+     1. optimize under interation 
+     return results.
+     
+keras.model
+     Layers:LSTM,Dense,Activation,Dropout,Input,Masking
+     callbacks: LambdaCallback
+     1.buld model: Input-x->LSTM_cell-a->Dense->output ->Model 
+     2.model compile: optimizer=Adam(learning rate,beta1,beta2), loss,metrics
+     3.model.fit: Input,Output,epochs
+ layer 层学习
+ input: 参数： shape[值(n,m,p)]，batch_size(值:n),sparse(值[true,falese])，ragged（值[true,false],处理non-uniform shape,variable length list, nest object）
+        返回值：placeHolder tensor
+        instance ： x = Input(shape=(n,m)) // placeholder tensor
+  Dense: 参数：units(值：n,output dimension),activation(值:['relu','softmax'],use_bias(值:[true,false],是否使用bias vector),kernel_initializer,bias_initializer,kernel_regularizer,bias_regularizer,activity_regularizer,kernel_constraint,bias_constraint
+         返回值: placeHolder tensor
+         instance: y = Dense(16,activation='softmax')(x)
+  Activation: 参数：activation(值:[function , string])
+         返回值: placeHolder tensor
+         instance: Activation(activation='relu')
+  Lambda: 参数: function,output_shape,mask,arguments
+          返回值: placeHolder tensor
+          instance: lamb = Lambda(lambda x : x **2)(x)
+  Embedding:参数: input_dim,output_dim,embeddings_initializer,embeddings_regularizer,activity_regularizer,embeddings_constraint,mask_zero,input_length
+          返回值: placeHolder tensor, shape=(batch_size,input_length,output_dim)
+  Droupout: 参数： rate(值:[0,1]),noise_shape,seed,
+           返回值: placeHolder tensor
+           instance: d = Dropout(0.2,input_shape=(2,))
+           call arguments: inputs, training(值:[true,false])
+          
+           
+ 
