@@ -33,6 +33,29 @@ keras.model
            返回值: placeHolder tensor
            instance: d = Dropout(0.2,input_shape=(2,))
            call arguments: inputs, training(值:[true,false])
-          
+  LSTM 参数:units(值：n,dimension of output),activation(值:['tanh']),recurrent_activation(值:['relu','sigmoid',用于recurrent_step]),use_bias(值:[true,false]),
+           kernel_initializer,recurrent_initializer,bias_initializer,unit_forget_bias,
+           kernel_regularizer,recurrent_regularizer,bias_regularizer,activity_regularizer,
+           kernel_constraint,recurrent_constraint,bias_constraint,
+           dropout(值:[0-1],用于input transformation),recurrent_dropout(值:[0,1],用于recurrent State的变化),implementation(值:[1,2],1代表bigger number of smaller opertions,2代表fewer number of larger options,默认2),
+           return_sequences(值:[true,false],是否返回一系列output, 还是返回最后一个结果，默认false),return_state(值:[true,false],是否返回最后的状态,默认false),go_backwards(值:[true,false(default)],是否逆序处理input),
+           stateful(值:[true,false(default)],last state of each sample of i in batch 是否用于下一个state),time_major(值:[true,false(default)],如果为true，input,output shape 为[time_steps,batch,features],效率更高一些，否则Batch_major 模式input,output 为[batch,time_steps,features]),
+           unroll(值:[true,false(default)],if true, network will be unrolled, more efficient but heavery in memory , 适合短句子；否则，loop will be used
+       返回值; placeHolder tensor
+       instance； LSTM_cell = LSTM(n,return_state=true)
+       调用参数：inputs(值:tensor ,shape=[batch,timesteps,features]),mask(binary tensor,shape=[batch,timesteps,features],用来表示指定的timeStep是否被masked),
+               training((值:[true,false(default)],是否为training mode,只针对dropout and recurrent_dropout),initial_state(list of initial state)
            
- 
+ Model；参数：inputs(值:keras.Input object or list of keras.Input objects),outputs:(值:functional api),name
+        内部函数：summary 参数(line_length(值:n,打印行的长度),position(值=[0-1,0-1,0-1,0-1],位置),print_fn(值:custom funtion, called each line summary)
+                get_layer 参数(name(值:name of layer), index(值:index of layer))
+        training API       
+                compile 参数(optimizer(值:['adm','rmsprop'] or optimizer instance),loss(值:['mse','categorical_crossentropy'],或者function(y_true,y_pred)或者Loss Instance)),metrics(值:['accuracy','mse'],accuracy可以根据损失函数和input判断是binary_accuray,categorical_accuracy,SparseCategorical_accuracy),
+                            loss_weights(值:list of scalar coefficients,衡量不同模型outputs 的损失权重),weighted_metrics(值:评估度量值，加权以sample_weight或者class_weight),run_eagerly(值:[true,false(default)],如果是true,则model logic不被包含在tf函数里)
+                fit
+                evaluate 
+                predict
+                train_on_batch
+                test_on_batch
+                predict_on_batch
+                         
