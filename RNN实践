@@ -48,12 +48,21 @@ keras.model
            
  Model；参数：inputs(值:keras.Input object or list of keras.Input objects),outputs:(值:functional api),name
         内部函数：summary 参数(line_length(值:n,打印行的长度),position(值=[0-1,0-1,0-1,0-1],位置),print_fn(值:custom funtion, called each line summary)
+                         返回； 参数个数，各层级
+                         
                 get_layer 参数(name(值:name of layer), index(值:index of layer))
+                keras.utils.plot_model(model, "my_first_model.png"，show_shapes(值:[true,false])) 参数可以 打印出来model的结构
+                
         training API       
                 compile 参数(optimizer(值:['adm','rmsprop'] or optimizer instance),loss(值:['mse','categorical_crossentropy'],或者function(y_true,y_pred)或者Loss Instance)),metrics(值:['accuracy','mse'],accuracy可以根据损失函数和input判断是binary_accuray,categorical_accuracy,SparseCategorical_accuracy),
                             loss_weights(值:list of scalar coefficients,衡量不同模型outputs 的损失权重),weighted_metrics(值:评估度量值，加权以sample_weight或者class_weight),run_eagerly(值:[true,false(default)],如果是true,则model logic不被包含在tf函数里)
-                fit
-                evaluate 
+                fit 参数(x(值:numpy array 或者tensor或者tf.data或者generator or tf.utils.sequence,input data),y(值:numpy.array或者tensor或者tf.data或者generator,tf.utils.sequence),batch_size,epochs(值:n),verbose(值:[0,1,2],为0的时候表示slient,为1的时候表示progess bar,为2的时候表示one line per epoch),
+                         callbacks(值:list of callbacks,应用到training上),validation_split(值:[0-1],is not supported by sequence,generator,dataset),
+                        validation_data,shuffle（值:[true,false,'batch'],在每一个epoch之前打乱训练数据，'batch' for HDF5 file in batch-sized chunks,not alonth with steps_per_epoch  ）,class_weight(),sample_weight,initial_epoch(值:n,epoch to start training),
+                        steps_per_epoch,validation_steps,validation_batch_size,validation_freq,
+                        max_queue_size,workers,use_multiprocessing)
+                     返回值:a History object, History.history 纪录 训练损失，validation 损失 和相应的epoch
+                evaluate
                 predict
                 train_on_batch
                 test_on_batch
