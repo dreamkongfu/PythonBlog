@@ -1,0 +1,141 @@
+模型的参数初始化
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+本文目录
+
+1. xavier初始化
+2. kaiming初始化
+3. 实际使用中看到的初始化
+3.1 ResNeXt，densenet中初始化
+3.2 wide-residual-networks中初始化（MSRinit）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+转载请注明出处：
+
+http://www.cnblogs.com/darkknightzh/p/8297793.html
+
+参考网址：
+
+http://pytorch.org/docs/0.3.0/nn.html?highlight=kaiming#torch.nn.init.kaiming_normal
+
+https://github.com/prlz77/ResNeXt.pytorch/blob/master/models/model.py
+
+https://github.com/facebookresearch/ResNeXt/blob/master/models/resnext.lua
+
+https://github.com/bamos/densenet.pytorch/blob/master/densenet.py
+
+https://github.com/szagoruyko/wide-residual-networks/blob/master/models/utils.lua
+
+说明：暂时就这么多吧，错误之处请见谅。前两个初始化的方法见pytorch官方文档
+
+回到顶部(go to top)
+1. xavier初始化
+torch.nn.init.xavier_uniform(tensor, gain=1)
+
+对于输入的tensor或者变量，通过论文Understanding the difficulty of training deep feedforward neural networks” - Glorot, X. & Bengio, Y. (2010)的方法初始化数据。初始化服从均匀分布𝑈(−𝑎,𝑎)，其中𝑎=𝑔𝑎𝑖𝑛×2/(𝑓𝑎𝑛_𝑖𝑛+𝑓𝑎𝑛_𝑜𝑢𝑡)‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾√×3‾√，该初始化方法也称Glorot initialisation。
+
+参数：
+
+      tensor：n维的 torch.Tensor 或者 autograd.Variable类型的数据
+
+      a：可选择的缩放参数
+
+例如：
+
+w = torch.Tensor(3, 5)
+nn.init.xavier_uniform(w, gain=nn.init.calculate_gain('relu'))
+torch.nn.init.xavier_normal(tensor, gain=1)
+
+对于输入的tensor或者变量，通过论文Understanding the difficulty of training deep feedforward neural networks” - Glorot, X. & Bengio, Y. (2010)的方法初始化数据。初始化服从高斯分布𝑁(0,𝑠𝑡𝑑)，其中𝑠𝑡𝑑=𝑔𝑎𝑖𝑛×2/(𝑓𝑎𝑛_𝑖𝑛+𝑓𝑎𝑛_𝑜𝑢𝑡)‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾√，该初始化方法也称Glorot initialisation。
+
+参数：
+
+      tensor：n维的 torch.Tensor 或者 autograd.Variable类型的数据
+
+      a：可选择的缩放参数
+
+例如：
+
+w = torch.Tensor(3, 5)
+nn.init.xavier_normal(w)
+回到顶部(go to top)
+2. kaiming初始化
+torch.nn.init.kaiming_uniform(tensor, a=0, mode='fan_in')
+
+对于输入的tensor或者变量，通过论文“Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification” - He, K. et al. (2015)的方法初始化数据。初始化服从均匀分布𝑈(−𝑏𝑜𝑢𝑛𝑑,𝑏𝑜𝑢𝑛𝑑)，其中𝑏𝑜𝑢𝑛𝑑=2/((1+𝑎2)×𝑓𝑎𝑛_𝑖𝑛)‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾√×3‾√，该初始化方法也称He initialisation。
+
+参数：
+
+      tensor：n维的 torch.Tensor 或者 autograd.Variable类型的数据
+
+      a：该层后面一层的激活函数中负的斜率(默认为ReLU，此时a=0)
+
+      mode：‘fan_in’ (default) 或者 ‘fan_out’. 使用fan_in保持weights的方差在前向传播中不变；使用fan_out保持weights的方差在反向传播中不变。
+
+例如：
+
+w = torch.Tensor(3, 5)
+nn.init.kaiming_uniform(w, mode='fan_in')
+torch.nn.init.kaiming_normal(tensor, a=0, mode='fan_in')
+
+对于输入的tensor或者变量，通过论文“Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification” - He, K. et al. (2015)的方法初始化数据。初始化服从高斯分布𝑁(0,𝑠𝑡𝑑)，其中𝑠𝑡𝑑=2/((1+𝑎2)×𝑓𝑎𝑛_𝑖𝑛)‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾√，该初始化方法也称He initialisation。
+
+参数：
+
+      tensor：n维的 torch.Tensor 或者 autograd.Variable类型的数据
+
+      a：该层后面一层的激活函数中负的斜率(默认为ReLU，此时a=0)
+
+      mode：‘fan_in’ (default) 或者 ‘fan_out’. 使用fan_in保持weights的方差在前向传播中不变；使用fan_out保持weights的方差在反向传播中不变。
+
+例如：
+
+w = torch.Tensor(3, 5)
+nn.init.kaiming_normal(w, mode='fan_out')
+使用的例子（具体参见原始网址）：
+
+https://github.com/prlz77/ResNeXt.pytorch/blob/master/models/model.py
+
+复制代码
+from torch.nn import init
+self.classifier = nn.Linear(self.stages[3], nlabels)
+init.kaiming_normal(self.classifier.weight)
+for key in self.state_dict():
+    if key.split('.')[-1] == 'weight':
+        if 'conv' in key:
+            init.kaiming_normal(self.state_dict()[key], mode='fan_out')
+        if 'bn' in key:
+            self.state_dict()[key][...] = 1
+    elif key.split('.')[-1] == 'bias':
+        self.state_dict()[key][...] = 0
+复制代码
+回到顶部(go to top)
+3. 实际使用中看到的初始化
+3.1 ResNeXt，densenet中初始化
+https://github.com/facebookresearch/ResNeXt/blob/master/models/resnext.lua
+
+https://github.com/bamos/densenet.pytorch/blob/master/densenet.py
+
+conv
+
+n = kW* kH*nOutputPlane
+weight:normal(0,math.sqrt(2/n))
+bias:zero()
+batchnorm
+
+weight:fill(1)
+bias:zero()
+linear
+
+bias:zero()
+3.2 wide-residual-networks中初始化（MSRinit）
+https://github.com/szagoruyko/wide-residual-networks/blob/master/models/utils.lua
+
+conv
+
+n = kW* kH*nInputPlane
+weight:normal(0,math.sqrt(2/n))
+bias:zero()
+linear
+
+bias:zero()
