@@ -1,0 +1,67 @@
+一。scatter_
+https://blog.csdn.net/qq_16234613/article/details/79827006
+scatter_(input, dim, index, src)将src中数据根据index中的索引按照dim的方向填进input中。
+可以把1.23看成[[1.23], [1.23]]。此处按列填充，LongTensor中的index=2对应zeros(2, 4)的(0,2)位置
+>>> z = torch.zeros(2, 4).scatter_(1, torch.LongTensor([[2], [3]]), 1.23)
+>>> z
+
+ 0.0000  0.0000  1.2300  0.0000
+ 0.0000  0.0000  0.0000  1.2300
+[torch.FloatTensor of size 2x4]
+二。view
+view(-1,1) -1 按照shape推测
+三。auto_function:
+
+https://pytorch.org/docs/stable/notes/extending.html#extending-torch-autograd
+调用的时候，用LinearFunction.apply(x)
+1.常数作为参数
+class MulConstant(Function):
+    @staticmethod
+    def forward(ctx, tensor, constant):
+        # ctx is a context object that can be used to stash information
+        # for backward computation
+        ctx.constant = constant
+        return tensor * constant
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # We return as many input gradients as there were arguments.
+        # Gradients of non-Tensor arguments to forward must be None.
+        return grad_output * ctx.constant, None
+  2.非常数作为参数
+   Inherit from Function
+class LinearFunction(Function):
+
+    # Note that both forward and backward are @staticmethods
+    @staticmethod
+    # bias is an optional argument
+    def forward(ctx, input, weight, bias=None):
+        ctx.save_for_backward(input, weight, bias)
+        output = input.mm(weight.t())
+        if bias is not None:
+            output += bias.unsqueeze(0).expand_as(output)
+        return output
+
+    # This function has only a single output, so it gets only one gradient
+    @staticmethod
+    def backward(ctx, grad_output):
+        # This is a pattern that is very convenient - at the top of backward
+        # unpack saved_tensors and initialize all gradients w.r.t. inputs to
+        # None. Thanks to the fact that additional trailing Nones are
+        # ignored, the return statement is simple even when the function has
+        # optional inputs.
+        input, weight, bias = ctx.saved_tensors
+        grad_input = grad_weight = grad_bias = None
+
+        # These needs_input_grad checks are optional and there only to
+        # improve efficiency. If you want to make your code simpler, you can
+        # skip them. Returning gradients for inputs that don't require it is
+        # not an error.
+        if ctx.needs_input_grad[0]:
+            grad_input = grad_output.mm(weight)
+        if ctx.needs_input_grad[1]:
+            grad_weight = grad_output.t().mm(input)
+        if bias is not None and ctx.needs_input_grad[2]:
+            grad_bias = grad_output.sum(0)
+
+        return grad_input, grad_weight, grad_bias
