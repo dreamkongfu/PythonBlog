@@ -1,0 +1,96 @@
+Keras transfer learning methods
+1.extract features
+      After training or loading the existing trained model, you can create another model
+              
+              
+              extract = Model(model.inputs, model.layers[-3]) # Dense(128,...)
+              features = extract.predict(data)
+              
+              
+      and use the .predict method to return the vectors from a specific layer, in this case every image will become (128,), the output of the Dense(128, ...) layer.
+
+      You can also train these networks jointly with 2 outputs using the functional API. Follow the guide and you'll see that 
+      you can chain models together and have multiple outputs each possibly with a separate loss.
+      This will allow your model to learn shared features that is useful for both classifying the MNIST image and your task at the same time
+2.freeze weights with custom layer
+      If you are trying to use transfer-learning using custom model, the answer depends on the way you saved your model architecture(description) and weights.
+
+      1. If you saved the description and weights of the model on single .h5 file.
+      You can easily load model, using keras's load_model method.
+
+
+            from keras.models import load_model
+            model = load_model("model_path.h5")
+      2. If you saved the description and weights of the model on separate file (e.g in json and .h5 files respectively)
+         You can first load the model description from json file and then load model weights.
+
+
+            form keras.models import model_from_json
+            with open("path_to_json_file.json") as json_file:
+                model = model_from_json(json_file.read())
+                model.load_weights("path_to_weights_file.h5")
+
+
+         After the old model is loaded you can now decide which layers to discard(usually these layers are top fully connected layers) and which layers to freeze. Let's assume you want to use the first five layers of the model without training again, the next three to be trained again, the last layers to be discarded(here it is assumed that the number of the network layers is greater than eight), and add three fully connected layer after the last layer. This can be done as follows.
+
+      Freeze the first five layers
+            for i in range(5):
+                model.layers[i].trainable = False
+            Make the next three layers trainable, this can be ignored if all layers are trainable.
+            for i in range(5,8):
+                model.layers[i].trainable = True
+            Add three more layers
+            ll = model.layers[8].output
+            ll = Dense(32)(ll)
+            ll = Dense(64)(ll)
+            ll = Dense(num_classes,activation="softmax")(ll)
+            new_model = Model(inputs=model.input,outputs=ll)
+            
+       tips: reference: https://www.tensorflow.org/guide/keras/save_and_serialize
+          save weight
+          save layer structure
+                for layer: 
+                          layer = keras.layers.Dense(3, activation="relu")
+                          layer_config = layer.get_config()
+                          new_layer = keras.layers.Dense.from_config(layer_config)
+                for functiondal Model:
+                          inputs = keras.Input((32,))
+                          outputs = keras.layers.Dense(1)(inputs)
+                          model = keras.Model(inputs, outputs)
+                          config = model.get_config()
+                          new_model = keras.Model.from_config(config)
+                for Sequential  model:
+                          method1:
+                                  model = keras.Sequential([keras.Input((32,)), keras.layers.Dense(1)])
+                                  config = model.get_config()
+                                  new_model = keras.Sequential.from_config(config)
+                         
+                          method3
+                                  model = keras.Sequential([keras.Input((32,)), keras.layers.Dense(1)])
+                                  json_config = model.to_json()
+                                  new_model = keras.models.model_from_json(json_config)
+
+          save layer and weight
+                          model.save("my_h5_model.h5")
+                          # It can be used to reconstruct the model identically.
+                          reconstructed_model = keras.models.load_model("my_h5_model.h5")
+          
+3.share weights with official model: https://keras.io/guides/transfer_learning/
+a.method1 
+          Instantiate a base model and load pre-trained weights into it.
+          Freeze all layers in the base model by setting trainable = False.
+          Create a new model on top of the output of one (or several) layers from the base model.
+          Train your new model on your new dataset.
+
+b.method2
+          Note that an alternative, more lightweight workflow could also be:
+
+          Instantiate a base model and load pre-trained weights into it.
+          Run your new dataset through it and record the output of one (or several) layers from the base model. This is called feature extraction.
+          Use that output as input data for a new, smaller model.
+          A key advantage of that second workflow is that you only run the base model once one your data, rather than once per epoch of training. So it's a lot faster & cheaper.
+Fine-tuning
+Once your model has converged on the new data, you can try to unfreeze all or part of the base model and retrain the whole model end-to-end with a very low learning rate.
+
+This is an optional last step that can potentially give you incremental improvements. It could also potentially lead to quick overfitting -- keep that in mind
+
