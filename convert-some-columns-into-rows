@@ -1,0 +1,69 @@
+#label , text
+#  2       2,25,26,35,36,38
+
+             |
+             V
+#id   word  ,label_1 label_2 label_3
+# 1   25       0       1      0
+# 1   25       0       1      0
+# 1   32       0       1      0
+
+
+Tool 1 :   col.transpose()                      2,25,26,35 -> 2
+                                                              25
+                                                              26
+                                                              35
+Tool 2 : stack over flow:  https://stackoverflow.com/questions/28654047/pandas-convert-some-columns-into-rows
+
+                                          location    name    Jan-2010    Feb-2010    March-2010
+                                          A           "test"  12          20          30
+                                          B           "foo"   18          20          25
+                                                               |
+                                                               V
+                                          location    name    Date        Value
+                                          A           "test"  Jan-2010    12       
+                                          A           "test"  Feb-2010    20
+                                          A           "test"  March-2010  30
+                                          B           "foo"   Jan-2010    18       
+                                          B           "foo"   Feb-2010    20
+                                          B           "foo"   March-2010  25
+
+solution: df.melt  df = pandas.dataFrame.melt
+          pd.melt
+
+                                          df.melt(id_vars=["location", "name"], 
+                                                  var_name="Date", 
+                                                  value_name="Value")
+
+                                            location    name        Date  Value
+                                          0        A  "test"    Jan-2010     12
+                                          1        B   "foo"    Jan-2010     18
+                                          2        A  "test"    Feb-2010     20
+                                          3        B   "foo"    Feb-2010     20
+                                          4        A  "test"  March-2010     30
+                                          5        B   "foo"  March-2010     25
+                           
+melt : 
+
+pandas.melt
+pandas.melt(frame, id_vars=None, value_vars=None, var_name=None, value_name='value', col_level=None, ignore_index=True)[source]
+Unpivot a DataFrame from wide to long format, optionally leaving identifiers set.
+
+This function is useful to massage a DataFrame into a format where one or more columns are identifier variables (id_vars), while all other columns, considered measured variables (value_vars), are “unpivoted” to the row axis, leaving just two non-identifier columns, ‘variable’ and ‘value’.
+
+Parameters
+            id_vars    tuple, list, or ndarray, optional Column(s) to use as identifier variables.
+            value_vars  tuple, list, or ndarray, optional  Column(s) to unpivot. If not specified, uses all columns that are not set as id_vars.
+            var_name    scalar Name to use for the ‘variable’ column. If None it uses frame.columns.name or ‘variable’.
+            value_name  scalar, default ‘value’ Name to use for the ‘value’ column.
+            col_level   int or str, optional If columns are a MultiIndex then use this level to melt.
+            ignore_indexbool, default True If True, original index is ignored. If False, the original index is retained. Index labels will be repeated as necessary.
+            New in version 1.1.0.
+            Returns DataFrame Unpivoted DataFrame.
+
+
+
+
+
+
+
