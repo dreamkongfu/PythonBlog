@@ -1,0 +1,11 @@
+#pd.read_pickle('./data/click.pkl')
+#df.to_pickle
+
+sparse matrix
+#from scipy import sparse
+#sparse.save_npz("yourmatrix.npz", your_matrix)
+#your_matrix_back = sparse.load_npz("yourmatrix.npz")
+
+csv
+pd.read_csv()
+df.to_csv()
