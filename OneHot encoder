@@ -1,0 +1,26 @@
+ import sklearn.preprocessing.OneHotEncoder
+ 
+ # 1. INSTANTIATE
+ 
+ enc = preprocessing.OneHotEncoder()  0.20 version 
+
+# 2. FIT
+enc.fit(y)
+
+# 3. Transform
+onehotlabels = enc.transform(y).toarray()
+onehotlabels.shape
+
+ Error: Expected 2D array, got 1D array instead
+        solution : series转换为ndarray: Y = np.reshape(Y.values,(-1,1)
+  
+         
+Error: Shape mismatch: if categories is an array, it has to be of shape (n_features,)
+
+        Constructor parameter categories is to tell distinct category values explicitly. E.g. you could provide [0, 1, 2]
+        stackover flow: 
+
+‘auto’ : Determine categories automatically from the training data.
+list : categories[i] holds the categories expected in the ith column. 
+The passed categories should not mix strings and numeric values within a single feature, and should be sorted in case of numeric values.
+The used categories can be found in the categories_ attribute
