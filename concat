@@ -1,0 +1,36 @@
+url: https://blog.csdn.net/qwertyuiop5rghar/article/details/84501120
+
+np.concatenate((a, b), axis=0)
+pandas 
+# 1 ，merge，类似数据库中的
+# (1)内连接，pd.merge(a1, a2, on='key')
+# (2)左连接，pd.merge(a1, a2, on='key', how='left')
+# (3)右连接，pd.merge(a1, a2, on='key', how='right')
+# (4)外连接， pd.merge(a1, a2, on='key', how='outer')
+# 内连接 ,交集
+pd.merge(data1,data2,on=['b'])
+# 左连接 注意：如果 on 有两个条件，on = ['a','b']
+# how = 'left','right','outer'
+pd.merge(data1,data2,on='b',how='left')
+ 
+# 2，append,相当于R中的rbind
+# ignore_index = True:这个时候 表示index重新记性排列,而且这种方法是复制一个样本
+data1.append(data2,ignore_index = True)
+ 
+# 3，join
+data2.columns=list('pown')
+# 列名不能重叠：在这里的用法和R中rbind很像，但是join的用法还是相对麻烦的
+result = data1.join(data2)
+
+concat 
+
+
+# 4,concat 这个方法能够实现上面所有的方法的效果
+# concat函数是pandas底下的方法，可以把数据根据不同的轴进行简单的融合
+# pd.concat(objs, axis=0, join='outer', join_axes=None, ignore_index=False,
+#        keys=None, levels=None, names=None, verify_integrity=False)
+ 
+# 参数说明：
+# objs:series,dataframe，或者panel构成的序列list
+# axis：0 行，1列
+# join：inner，outer
