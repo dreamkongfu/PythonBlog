@@ -1,0 +1,3 @@
+newDF = df['name'].str.split(' ', 1, True)
+import pandas as pd
+data['name'].str.split('|',expand=True)
