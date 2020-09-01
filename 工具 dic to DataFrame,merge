@@ -1,0 +1,3 @@
+tmp = pd.DataFrame(tfidf.vocabulary_.items(),columns=['word','count_'+str(label)])
+#全联接
+tmps = pd.merge(tmp, tmps, on='word', how='outer')
