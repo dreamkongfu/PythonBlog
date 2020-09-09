@@ -27,6 +27,7 @@ concat
 
 # 4,concat 这个方法能够实现上面所有的方法的效果
 # concat函数是pandas底下的方法，可以把数据根据不同的轴进行简单的融合
+#axis = 0, 垂直叠加，加行;axis = 1, 水平叠加，加列
 # pd.concat(objs, axis=0, join='outer', join_axes=None, ignore_index=False,
 #        keys=None, levels=None, names=None, verify_integrity=False)
  
