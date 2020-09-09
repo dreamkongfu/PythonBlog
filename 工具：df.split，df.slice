@@ -1,3 +1,6 @@
 newDF = df['name'].str.split(' ', 1, True)
 import pandas as pd
 data['name'].str.split('|',expand=True)
+df[:2]-> df[0:2] 索引 几行数据
+https://www.php.cn/python-tutorials-356272.html
+
