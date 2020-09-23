@@ -1,0 +1,74 @@
+参考：https://blog.csdn.net/weixin_39198406/article/details/104916715
+一基于pyspark生成DataFrame的几种方式
+      1.读取CSV 生成DATa Frame
+            from pyspark.sql import SparkSession
+            spark = SparkSession \
+                .builder \
+                .appName("test").master("local") \
+                .getOrCreate()
+
+            date = '20190531'
+            path = 'task/taxiGps'+date+'.csv'
+            df = spark.read.format("csv").option("header", "true").load(path)
+            df.show()
+      2.从SQL数据源创建DataFrame
+            from pyspark import SparkContext
+            from pyspark.sql import SQLContext
+            import pyspark.sql.functions as F
+
+
+            sc = SparkContext("local", appName="mysqltest")
+            sqlContext = SQLContext(sc)
+            df = sqlContext.read.format("jdbc").options(
+                url="jdbc:mysql://localhost:3306/mydata?user=root&password=mysql&"
+                    "useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&"
+                    "useLegacyDatetimeCode=false&serverTimezone=UTC ", dbtable="detail_data").load()
+            df.show(n=5)
+            sc.stop()
+      3.读取json文件创建
+            df = spark.read.json("people.json")
+二检查列 是否>0, 上下取整
+    TEST_df.withColumn("want", F.bround(F.when(TEST_df["col1"] < 0, 0).otherwise(TEST_df["col1"])).cast("int")).show()
+三 日期函数
+参考;https://blog.csdn.net/u010955999/article/details/81112812
+字符转日期:
+          from pyspark.sql.functions import to_date, to_timestamp
+
+          # 1.转日期
+          df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+          df.select(to_date(df.t).alias('date')).show()
+          # [Row(date=datetime.date(1997, 2, 28))]
+
+          # 2.带时间的日期
+          df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+          df.select(to_timestamp(df.t).alias('dt')).show()
+          # [Row(dt=datetime.datetime(1997, 2, 28, 10, 30))]
+
+          # 还可以指定日期格式
+          df = spark.createDataFrame([('1997-02-28 10:30:00',)], ['t'])
+          df.select(to_timestamp(df.t, 'yyyy-MM-dd HH:mm:ss').alias('dt')).show()
+          # [Row(dt=datetime.datetime(1997, 2, 28, 10, 30))]
+获取日期中的年月日
+
+          from pyspark.sql.functions import year, month, dayofmonth
+          df = spark.createDataFrame([('2015-04-08',)], ['a'])
+
+          df.select(year('a').alias('year'), 
+                    month('a').alias('month'),
+                    dayofmonth('a').alias('day')
+            ).show()
+获取时分秒
+          
+            from pyspark.sql.functions import hour, minute, second
+
+            df = spark.createDataFrame([('2015-04-08 13:08:15',)], ['a'])
+            df.select(hour('a').alias('hour'),
+                      minute('a').alias('minute'),
+                      second('a').alias('second')
+                      ).show()
+日期加减
+            from pyspark.sql.functions import date_add, date_sub
+            df = spark.createDataFrame([('2015-04-08',)], ['d'])
+            df.select(date_add(df.d, 1).alias('d-add'),
+                      date_sub(df.d, 1).alias('d-sub')
+                ).show()
