@@ -1,0 +1,27 @@
+cite: https://blog.csdn.net/a486259/article/details/86154857
+      https://www.jianshu.com/p/6838b3d1daa6
+batch write
+批量写入数据的方法（支持任意维度的数据）一直追加数据到h5文件中
+
+    def save_h5(h5f,data,target):
+        shape_list=list(data.shape)
+        if not h5f.__contains__(target):
+            shape_list[0]=None #设置数组的第一个维度是0
+            dataset = h5f.create_dataset(target, data=data,maxshape=tuple(shape_list), chunks=True)
+            return
+        else:
+            dataset = h5f[target]
+        len_old=dataset.shape[0]
+        len_new=len_old+data.shape[0]
+        shape_list[0]=len_new 
+        dataset.resize(tuple(shape_list)) #修改数组的第一个维度
+        dataset[len_old:len_new] = data  #存入新的文件
+ simple write
+ # create and write
+ 如果我们有现成的numpy数组，那么可以在创建数据集的时候就赋值，这个时候就不必指定数据的类型和形状了，只需要把数组名传给参数data
+f = h5py.File("testh.h5", 'w') # 创建一个h5文件，文件指针是f
+f['data'] = imgData  # 将数据写入文件的主键data下面
+f['labels'] = range(3) # 将数据写入文件的主键labels下面
+f.close() # 关闭文件
+
+simple read 
