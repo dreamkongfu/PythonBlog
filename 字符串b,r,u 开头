@@ -1,0 +1,11 @@
+参考：https://www.cnblogs.com/liangmingshen/p/9274021.html
+一、b'2020' 代表这个字符串是bytes
+str ,byters 转换
+str.encode('utf-8')
+bytes.decode('utf-8’)
+二、u'2020' 代表整个字符串是unicode
+str,unicode 转换
+str.encode('utf')
+三、r'2020'代表整个字符串去掉反斜杠的转义机制
+r'\n\n\n' 表示 生字符串'\n\n\n'
+常在正则表达式看到
