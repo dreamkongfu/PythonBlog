@@ -1,0 +1,25 @@
+Tensorflow1   Tensorflow2 
+https://www.tensorflow.org/api_docs/python
+由于tensorflow2.0对很多函数做了修改，导致函数的所处的模块发生了改变，当遇到上述AttributeError时，记得打开官方文档，然后全局搜一下报错的函数。
+比如GradientDescentOptimizer函数，马上就能知道怎么使用这个函数了！！！
+
+官网文档的地址如下
+
+1.tf.contrib.layers.layer_norm
+   tf.keras.layers.LayerNormalization
+2.tf.ConfigProto
+tf.compat.v1.ConfigProto
+3.tf.truncated_normal_initializer
+tf.compat.v1.truncated_normal_initializer
+4. tf.get_variable
+tf.compat.v1.get_variable
+5.tf.assert_less_equal
+tf.compat.v1.assert_less_equal
+6
+tf.compat.v1.variable_scope
+7
+tf.compat.v1.layers.dense
+8
+tf.compat.v1.nn.xw_plus_b
+9 tf.contrib.layers.xavier_initializer
+xavier_initializer
