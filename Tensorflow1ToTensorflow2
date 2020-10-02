@@ -22,4 +22,31 @@ tf.compat.v1.layers.dense
 8
 tf.compat.v1.nn.xw_plus_b
 9 tf.contrib.layers.xavier_initializer
-xavier_initializer
+tf.glorot_uniform_initializer
+https://www.cnblogs.com/adong7639/p/9547789.html
+
+11 tf.train.init_from_checkpoint
+tf.compat.v1.train.init_from_checkpoint
+12 tf.trainable_variables
+tf.compat.v1.trainable_variables
+13 tf.Session
+tf.compat.v1.Session
+14 tf.placeholder
+tf.compat.v1.placeholder
+15 tf.nn.bidirectional_dynamic_rnn
+tf.compat.v1.nn.bidirectional_dynamic_rnn
+16 tf.gfile
+tf.compat.v1.gfile
+17 tf.get_variable_scope
+tf.compat.v1.get_variable_scope
+18 tf.contrib.layers.layer_norm
+tf.keras.layers.LayerNormalization
+19.tf.train.list_variables
+tf.compat.v1.train.list_variables
+20 tf.erf
+tf.compat.v1.erf
+
+
+
+
+
