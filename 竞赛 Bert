@@ -1,0 +1,20 @@
+max
+model:
+1.use last numLayer=5 : dynamic weight sum
+2.use fist word in last layer to predict : presume to infer most of info , or use all words in last layer
+3.bert model file : 使用 Chinese_roberta_wwm_large_ext_L-24_H-1024_A_16
+4.use crf learn label transfering matrix 
+  deep learning can learn feather because it can learn what crf learn and avoid crf problem
+5.先跑标签label2json
+vertibi : 动态规划的方法，取top3,top5 加权
+beam_search
+品测指标作为基准？
+参数初始化非常重要
+
+
+
+半监督迁移学习
+使用 Chinese_roberta_wwm_large_ext_L-24_H-1024_A_16
+
+半监督迁移学习
+伪标签的样本权重为0.1 ， batch*size
