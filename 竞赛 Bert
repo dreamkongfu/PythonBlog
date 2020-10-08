@@ -1,13 +1,56 @@
-max
-model:
-1.use last numLayer=5 : dynamic weight sum
-2.use fist word in last layer to predict : presume to infer most of info , or use all words in last layer
-3.bert model file : 使用 Chinese_roberta_wwm_large_ext_L-24_H-1024_A_16
-4.use crf learn label transfering matrix 
-  deep learning can learn feather because it can learn what crf learn and avoid crf problem
-5.先跑标签label2json
+BERT：
+Viterbi——decode
+
+
+transformer：Encoder(position encoding很重要+input embedding),Decoder
+Encoder: N*(multiHead Attention+add&Norm+Feed Forward+Add&LNorm)
+transformer：Encoder(position encoding很重要+input embedding),Decoder(position encoding很重要+output Embedding)
+1.position encoding为什么要用，如何设计
+2.multi-head attention的设计细节
+3.Feed Forward的作用
+4.残差连接
+5.这里用的LayerNorm为什么不用BN
+
+Decoder:
+
+
+
+       
+
+
+
+
+CNN卷积滑窗：
+          数据增强
+
+长句拆分短句，长度500，参数可以控制
+label，可以采用BIOS的方式
+
+特点：
+    1.use fist word in last layer to predict : presume to infer most of info , or use all words in last layer
+  
+    2.use crf learn label transfering matrix 
+      deep learning can learn feather because it can learn what crf learn and avoid crf problem
+    3.先跑标签label2json，beam_search
+    4.
 vertibi : 动态规划的方法，取top3,top5 加权
-beam_search
+infer.py  线上交叉验证的结果，运行
+
+
+
+
+
+
+竞赛上分点:
+1.Bert最后1层还是多层：  use last numLayer=5 : dynamic weight sum
+2.使用24层的Bert模型 bert model file : 使用 Chinese_roberta_wwm_large_ext_L-24_H-1024_A_16，24层
+3.batch_size: 大的batch_size 可以提高
+4.dropout 多个，或者rate 增大减小
+5.构造训练样本，因为许多训练样本偏长（>512)，可以尝试CNN卷积滑窗的形式。以某个特殊符号进行切分，设定窗口大小
+5.模型融合
+6.半监督迁移学习（网上找公开的医学相关数据，最好数据分布差异小）
+
+
 品测指标作为基准？
 参数初始化非常重要
 
