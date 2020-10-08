@@ -83,6 +83,10 @@ X/Y确定：
 
 3、run_pretraining模块：在执行预训练的时候针对以上两种标签分别利用bert模型的不同输出部件，计算loss，然后进行梯度下降优化。
 
+BIO标注模式: (B-begin，I-inside，O-outside)
+
+BIOES标注模式: (B-begin，I-inside，O-outside，E-end，S-single)
+
 
 
                                     
