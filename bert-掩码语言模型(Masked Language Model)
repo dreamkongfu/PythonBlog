@@ -1,0 +1,16 @@
+掩码语言模型(Masked Language Model)
+cite: https://www.lizenghai.com/archives/66182.html
+select some words and replace these words with masks.
+when training , predict these masked words :   hidden layer of masked words  put into softmax to predict
+
+Masked Language model的Masked具体是随机mask语料中15%的token，然后将masked token 位置输出的最终隐层向量送入softmax，来预测masked token。具体是指，
+
+这样输入一个句子，每次只预测句子中大概15%的词（这个15%也是随机选取的，随机选取将真实的词汇进行shuffle之后取前15%的词），所以BERT训练很慢，而对于盖住词的特殊标记，
+在下游NLP任务中不存在。因此，为了和后续任务保持一致，作者按一定的比例在需要预测的词位置上输入原词或者输入某个随机的词。
+如：my dog is hairy
+
+    有80%的概率用“[mask]”标记来替换——my dog is [MASK]
+    有10%的概率用随机采样的一个单词来替换——my dog is apple
+    有10%的概率不做替换——my dog is hairy
+
+    这里的概率选取是用random去做的，random.Random().random()<0.8就替换成 [MASK],如果大于0.8，就在>取一个随机数，大于0.5和小于0.5来判断是否用原词还是词汇表中的随机词。
