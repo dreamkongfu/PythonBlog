@@ -45,7 +45,14 @@ tf.keras.layers.LayerNormalization
 tf.compat.v1.train.list_variables
 20 tf.erf
 tf.compat.v1.erf
-
+21.tf.train.get_or_create_global_step
+tf.compat.v1.train.get_or_create_global_step
+22 tf.train.polynomial_decay
+tf.compat.v1.train.polynomial_decay
+23 tf.global_variables
+tf.compat.v1.global_variables 
+24 tf.global_variables_initializer
+tf.compat.v1.global_variables_initializer
 
 
 
