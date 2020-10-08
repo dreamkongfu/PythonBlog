@@ -53,6 +53,21 @@ tf.compat.v1.train.polynomial_decay
 tf.compat.v1.global_variables 
 24 tf.global_variables_initializer
 tf.compat.v1.global_variables_initializer
+25.tf.flags
+tf.compat.v1.flags
+26.tf.app
+tf.compat.v1.app
+27.tf.logging
+tf.compat.v1.logging
+28. tf.train.Feature
+tf.compat.v1.train.Feature
+29. tf.train.Int64List
+tf.compat.v1.train.Int64List
+30. tf.train.FloatList
+tf.compat.v1.train.FloatList
+31 tf.python_io
+tf.compat.v1.python_io
+
 
 
 
