@@ -1,4 +1,7 @@
-参考： www.jianshu.com/p/22e462f01d8c
+
+作者：西溪雷神
+链接：https://www.jianshu.com/p/22e462f01d8c
+来源：简书
 一。Tokenize
       BasicTokenize：主要进行unicode转换,标点字符分割，小写转换，中文字符分割，去除重音符号，返回关于词的数组
                 ord函数： 返回表示指定字符unicode编码的数字
@@ -18,7 +21,7 @@
 creating_trainging_instances: 阅读数据，数据的输入文本可以是一个文件，也可以是用逗号分割的若干文件，可以是一行，也可以用空一行表示段落的边界，一个段落表示成一个document.
               create_instances_from_document:
                                 trainingInstance:
-                                    1）一个instance包含一个tokens，实际上就是输入的词序列，该序列表现形式为 【CLS】A【SEP】B 【SEP】
+                                    1）一个instance包含一个tokens，实际上就是输入的词序列，该序列表现形式为 【CLS】A【SEP】B 【SEP】CLS 标记句首，SEP标记句尾
                                 token最后表现形式为： input=【CLS】the main went to [Mask] store [SEP] he bought a gallon [MASK] milk [SEP]
                                                    label = IsNext
                                     segment_ids 指的形式为[0,0,0....1,1,1,1]0的个数为i+1个，1的个数为max_seq_length-(i+1) 对应到模型输入就是token_type
@@ -32,11 +35,53 @@ while len(input_ids) < max_seq_length:
          input_mask.append(0)
          segment_ids.append(0)
 之前有short_seq_prob的概率导致样本的长度小于max_predictions_per_seq,这里把这些样本补齐，padding为0，同样的还有input_mask 和segment_ids
-2) 把instance的is_random_next 转换为变量next_sentence_label保存
-zh_test.txt: 文本
-vocab.txt是下载Bert中文预训练模型的词典
-output
+                                    2) 把instance的is_random_next 转换为变量next_sentence_label保存
+                                    zh_test.txt: 文本
+                                    vocab.txt是下载Bert中文预训练模型的词典
+                                    output
 
+四。run_pretraining.py
+预训练的执行模块
+    input_ids = features["input_ids"]
+    input_mask = features["input_mask"]
+    segment_ids = features["segment_ids"]
+    masked_lm_positions = features["masked_lm_positions"]
+    masked_lm_ids = features["masked_lm_ids"]
+    masked_lm_weights = features["masked_lm_weights"]
+    next_sentence_labels = features["next_sentence_labels"]
+    model = modeling.BertModel(
+        config=bert_config,
+        is_training=is_training,
+        input_ids=input_ids,
+        input_mask=input_mask,
+        token_type_ids=segment_ids,
+        use_one_hot_embeddings=use_one_hot_embeddings)
+X/Y确定：
+其中input_ids、input_mask 、segment_ids 作为X，剩下的masked_lm_positions、masked_lm_ids 、masked_lm_weights 、next_sentence_labels 共同作为Y
+
+2、 loss
+    (masked_lm_loss,
+     masked_lm_example_loss, masked_lm_log_probs) = get_masked_lm_output(
+         bert_config, model.get_sequence_output(), model.get_embedding_table(),
+         masked_lm_positions, masked_lm_ids, masked_lm_weights)
+
+    (next_sentence_loss, next_sentence_example_loss,
+     next_sentence_log_probs) = get_next_sentence_output(
+         bert_config, model.get_pooled_output(), next_sentence_labels)
+
+    total_loss = masked_lm_loss + next_sentence_loss
+可以看到loss 分别由masked_lm_loss和next_sentence_loss组成，masked_lm_loss针对的是语言模型对MASK起来的标签的预测，即上下文语境预测当前词；而next_sentence_loss是对于句子关系的预测。前者在迁移学习中可以用于标注类任务（分词、NER等），后者可以用于句子关系任务（QA、自然语言推理等）。
+
+需要多说一句的是，masked_lm_loss，用到了模型的sequence_output和embedding_table，这是因为对多个MASK的标签进行预测是一个标注问题，所以需要获取最后一层的整个sequence，而embedding_table用来反embedding，这样就映射到token的学习了。而next_sentence_loss用到的是pooled_output，对应的是第一个token [CLS]，它一般用于分类任务的学习。
+
+总结：
+本文介绍了以下几个内容：
+
+1、tokenization模块：我把它叫做对原始文本段的解析，只有解析过后才能标准化输入；
+
+2、create_pretraining_data模块：对原始数据进行转换，原始数据本是无标签的数据，通过句子的拼接可以产生句子关系的标签，通过MASK可以产生标注的标签，其本质是语言模型的应用；
+
+3、run_pretraining模块：在执行预训练的时候针对以上两种标签分别利用bert模型的不同输出部件，计算loss，然后进行梯度下降优化。
 
 
 
