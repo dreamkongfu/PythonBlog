@@ -1,0 +1,44 @@
+参考： www.jianshu.com/p/22e462f01d8c
+一。Tokenize
+      BasicTokenize：主要进行unicode转换,标点字符分割，小写转换，中文字符分割，去除重音符号，返回关于词的数组
+                ord函数： 返回表示指定字符unicode编码的数字
+      WordpieceTokenizer
+                  将合成词分解成类似词根一样的词片。例如 ‘unwanted’分解成 ['un','want','ed'],防止因为词过于生僻，没有被收录进词典。英语中这样的合成词非常多
+      FullTokenizer
+                  对一个文本段进行以上两种解析，最后返回词的数组，同时还提供token的id的索引以及id的token索引。这里的token可以理解为文本段处理过后的最小单元
+二，create_pretraining_data.py
+     配置input_file,output_file分别代表输入的源语料文件和处理过的语料文件地址
+     do_lower_case:是否转为小写字母
+     dupe_factor:默认重复10次，目的是生成不同情况的masks
+     short_seq_prob: 构造长度小于指定‘max_seq_length’的样本比例 构造短样本是为了防止过拟合，在fine_tune过程中输入的target_seq_length是可变的
+     
+三，main函数
+构造tokenize，构造instances，保存instances
+构造instances：
+creating_trainging_instances: 阅读数据，数据的输入文本可以是一个文件，也可以是用逗号分割的若干文件，可以是一行，也可以用空一行表示段落的边界，一个段落表示成一个document.
+              create_instances_from_document:
+                                trainingInstance:
+                                    1）一个instance包含一个tokens，实际上就是输入的词序列，该序列表现形式为 【CLS】A【SEP】B 【SEP】
+                                token最后表现形式为： input=【CLS】the main went to [Mask] store [SEP] he bought a gallon [MASK] milk [SEP]
+                                                   label = IsNext
+                                    segment_ids 指的形式为[0,0,0....1,1,1,1]0的个数为i+1个，1的个数为max_seq_length-(i+1) 对应到模型输入就是token_type
+                                    is_random_next: 其实就是Label，0.5的概率为True，如果为True，B和A不属于同一document。剩下的情况为False，则B为A同一document的后续句子
+                                    masked_lm_positions:序列里被MASK的位置
+                                    masked_lm_labels:序列里被MASK的token
+                                    2）create_masked_lm_predictions的函数里，一个序列在指定MASK数量之后，有80%被真正MASK，10%保留原来的token，10%被随机替换成其他的token
+保存instance
+while len(input_ids) < max_seq_length:
+         input_ids.append(0)
+         input_mask.append(0)
+         segment_ids.append(0)
+之前有short_seq_prob的概率导致样本的长度小于max_predictions_per_seq,这里把这些样本补齐，padding为0，同样的还有input_mask 和segment_ids
+2) 把instance的is_random_next 转换为变量next_sentence_label保存
+zh_test.txt: 文本
+vocab.txt是下载Bert中文预训练模型的词典
+output
+
+
+
+
+                                    
+              
