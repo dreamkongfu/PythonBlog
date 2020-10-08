@@ -1,0 +1,18 @@
+Bert 
+     mask token in MLM task,use MASK in training but not in prediction
+     data ->16G
+     transform for long text
+Bert-WWW
+     mask words in MLM task , more reasonable
+Roberta
+      model structure is same with Bert but with improvements in more data and better training methods. data -> 161G
+      remove NSP task
+      MLM task changed to Dynamic Masking LM
+      greater batch size . 
+XLNet 
+      PML, permutation Language Model, Autoregressive LM, creation task . 
+      transformer-XL for longer text
+Albert 
+      simpler model, less data, better result
+      Vocabulary Embedding  divide into V*H + H*E (H<<E)
+      share parameters among layers,avoid the increase of parameters in deeper layer
