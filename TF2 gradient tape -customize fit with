@@ -1,0 +1,24 @@
+https://zhuanlan.zhihu.com/p/70232196
+https://tensorflow.google.cn/guide/keras/customizing_what_happens_in_fit?hl=zh-cn
+
+@tf.function
+def train_step(inputs, targets):
+    with tf.GradientTape() as tape:
+        predictions = model(inputs, training=True)
+        loss = CRF.sparse_loss(targets, predictions)
+
+    # compute gradients and update variables    keras.models.Model.tranable_weights, tf.keras.Model.tranable_variables
+    bert_vars = [varb.name for varb in model.trainable_weights if
+                 ('Embedding' in varb.name) or ('Transformer' in varb.name)]
+    bert_gradients = tape.gradient(loss,bert_vars)
+    bert_optimizer = Adam(learning_rate=learing_rate)
+    bert_optimizer.apply_gradients(zip(bert_gradients, bert_vars))
+
+    lstm_vars = [varb.name for varb in model.trainable_weights if
+                 ('Embedding' not in varb.name) and ('Transformer' not in varb.name)]
+    lstm_gradients = tape.gradient(loss, lstm_vars)
+    lstm_optimizer = Adam(learning_rate=lstm_lr)
+    lstm_optimizer.apply_gradients(zip(lstm_gradients, lstm_vars))
+    return loss
+    
+ 
